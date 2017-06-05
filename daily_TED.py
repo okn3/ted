@@ -1,5 +1,6 @@
 from urllib import request
 import os
+import bs4
 
 
 def search_url(keyword):
@@ -11,10 +12,10 @@ def search_url(keyword):
     """
     if keyword:
         # serch video in url
-        return url
+        return
     else:
         # random
-        return url
+        return
 
 
 def download_video(url):
@@ -44,12 +45,22 @@ def download_script(url, language):
 
     @params url ダウンドーロ先のリンク
     @params langage 言語の指定
-    @return なし
+    @return 本文の文字列
     """
+    script = ""
+    url += "transcript?language=" + language
+    html = request.urlopen(url)
+    soup = bs4.BeautifulSoup(html)
+    body = soup.select(".talk-transcript__fragment")
+    for content in body:
+        script += (content.string + "\n")
+    return script
 
 if __name__ == "__main__":
 
     #url = search_url()
-    url = "https://download.ted.com/talks/DanAriely_2009-480p.mp4?apikey=489b859150fc58263f17110eeb44ed5fba4a3b22"
-  #  download_video(url)
-    download_audio(url)
+    main_url = "https://www.ted.com/talks/dan_ariely_on_our_buggy_moral_code/"
+    dl_url = "https://download.ted.com/talks/DanAriely_2009-480p.mp4?apikey=489b859150fc58263f17110eeb44ed5fba4a3b22"
+    print(download_script(main_url, "en"))
+  #  download_video(dl_url)
+  #  download_audio(dl_url)

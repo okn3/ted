@@ -27,6 +27,18 @@ def download_video(url):
     request.urlretrieve(url, filename=os.path.curdir + "/videos/" + name + ".mp4")
 
 
+def download_audio(url):
+    """スクリプトのダウンドーロ
+
+    @params url ダウンドーロ先のリンク
+    @return なし
+    """
+    url = url.replace("-480p.mp4", ".mp3")
+    print(url)
+    name = "sample-name"
+    request.urlretrieve(url, filename=os.path.curdir + "/audio/" + name + ".mp3")
+
+
 def download_script(url, language):
     """スクリプトのダウンドーロ
 
@@ -35,21 +47,9 @@ def download_script(url, language):
     @return なし
     """
 
-
-def download_audio(url):
-    """スクリプトのダウンドーロ
-
-    @params url ダウンドーロ先のリンク
-    @return なし
-    """
-    url = url.replace("-480p.mp4", "mp3")
-    name = "sample-name"
-    request.urlretrieve(url, filename=os.path.curdir + "/audio/" + name + ".mp3")
-
-
 if __name__ == "__main__":
 
     #url = search_url()
     url = "https://download.ted.com/talks/DanAriely_2009-480p.mp4?apikey=489b859150fc58263f17110eeb44ed5fba4a3b22"
-    download_video(url)
-  #  download_audio(url)
+  #  download_video(url)
+    download_audio(url)

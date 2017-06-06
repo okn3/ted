@@ -2,6 +2,8 @@ from urllib import request
 import os
 import bs4
 import random
+import smtplib
+from email.mime.text import MIMEText
 
 
 def search_url():
@@ -59,9 +61,19 @@ def download_script(url, language):
     return script
 
 
-def send_mail():
+def send_mail(to_address, url, script):
     """データをメールで送る
     """
+
+    content = url + "\n" + script
+    msg = MIMEText(content)
+    msg['Subject'] = 'daily TED'
+    msg['From'] = 'ted.com'
+    msg['To'] = to_address
+    s = smtplib.SMTP()
+    s.connect()
+    s.sendmail('ted.com', to_address, msg.as_string())
+    s.close()
 
 
 if __name__ == "__main__":
@@ -74,7 +86,9 @@ if __name__ == "__main__":
     links = search_url()
     url = main_url + random.choice(links)
     print("--------------\n", url)
-    print(download_script(url, "en"))
+    script = download_script(url, "en")
+    print(script)
+   # send_mail("okuno.ryo.411@gmail.com", url, script) #動かない
   #  download_video(dl_url)
   #  download_audio(dl_url)
-    os.system("open " + url)
+    #os.system("open " + url)

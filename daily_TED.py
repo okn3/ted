@@ -3,19 +3,20 @@ import os
 import bs4
 
 
-def search_url(keyword):
-    """ 動画の検索
-    キーワードが無い場合はランダムで検索を行う
+def search_url():
+    """ 動画のURLを検索(6分以内)
 
-    @params 検索キーワード
-    @return 動画のURL
+    @return 動画のURLのリスト
     """
-    if keyword:
-        # serch video in url
-        return
-    else:
-        # random
-        return
+
+    talk_links = []
+    url = "https://www.ted.com/talks?duration=0-6"
+    for num in range(8):
+        html = request.urlopen(url + "&page=" + str(num + 1))
+        soup = bs4.BeautifulSoup(html, "html.parser")
+        links = soup.select(".talk-link a.ga-link")
+        [talk_links.append(link) for link in [link["href"] for link in links[0::2]]]
+    return talk_links
 
 
 def download_video(url):
@@ -56,11 +57,19 @@ def download_script(url, language):
         script += (content.string + "\n")
     return script
 
+
+def send_mail():
+    """データをメールで送る
+    """
+
+
 if __name__ == "__main__":
 
-    #url = search_url()
-    main_url = "https://www.ted.com/talks/dan_ariely_on_our_buggy_moral_code/"
+    main_url = "https://www.ted.com/"
+    dammy_talks = "/talks/sally_kohn_let_s_try_emotional_correctness"
+    # ページに行かないとわからない
     dl_url = "https://download.ted.com/talks/DanAriely_2009-480p.mp4?apikey=489b859150fc58263f17110eeb44ed5fba4a3b22"
-    print(download_script(main_url, "en"))
+    links = search_url()
+   # print(download_script(main_url, "en"))
   #  download_video(dl_url)
   #  download_audio(dl_url)

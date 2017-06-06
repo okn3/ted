@@ -1,6 +1,7 @@
 from urllib import request
 import os
 import bs4
+import random
 
 
 def search_url():
@@ -49,9 +50,9 @@ def download_script(url, language):
     @return 本文の文字列
     """
     script = ""
-    url += "transcript?language=" + language
+    url += "/transcript?language=" + language
     html = request.urlopen(url)
-    soup = bs4.BeautifulSoup(html)
+    soup = bs4.BeautifulSoup(html, "html.parser")
     body = soup.select(".talk-transcript__fragment")
     for content in body:
         script += (content.string + "\n")
@@ -65,11 +66,15 @@ def send_mail():
 
 if __name__ == "__main__":
 
-    main_url = "https://www.ted.com/"
-    dammy_talks = "/talks/sally_kohn_let_s_try_emotional_correctness"
+    main_url = "https://www.ted.com"
     # ページに行かないとわからない
-    dl_url = "https://download.ted.com/talks/DanAriely_2009-480p.mp4?apikey=489b859150fc58263f17110eeb44ed5fba4a3b22"
+    dl_url = "https://download.ted.com"
+    apikey = "489b859150fc58263f17110eeb44ed5fba4a3b22"
+    gomi = "/talks/DanAriely_2009-480p.mp4?apikey="
     links = search_url()
-   # print(download_script(main_url, "en"))
+    url = main_url + random.choice(links)
+    print("--------------\n", url)
+    print(download_script(url, "en"))
   #  download_video(dl_url)
   #  download_audio(dl_url)
+    os.system("open " + url)

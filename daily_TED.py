@@ -4,6 +4,7 @@ import bs4
 import random
 import smtplib
 from email.mime.text import MIMEText
+from selenium import webdriver
 
 
 def search_url():
@@ -60,6 +61,10 @@ def download_script(url, language):
         script += (content.string + "\n")
     return script
 
+def get_dl_link(url):
+    browser = webdriver.PhamtomJS("./phantomjs") #proxy超えられない
+    browser.get(url)
+
 
 def send_mail(to_address, url, script):
     """データをメールで送る
@@ -82,8 +87,9 @@ if __name__ == "__main__":
     # ページに行かないとわからない
     dl_url = "https://download.ted.com"
     apikey = "489b859150fc58263f17110eeb44ed5fba4a3b22"
-    gomi = "/talks/DanAriely_2009-480p.mp4?apikey="
+    dl_link = "/talks/DanAriely_2009-480p.mp4?apikey="
     links = search_url()
+
     url = main_url + random.choice(links)
     print("--------------\n", url)
     script = download_script(url, "en")

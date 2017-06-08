@@ -1,4 +1,5 @@
 from urllib import request
+import requests
 import os
 import bs4
 import random
@@ -45,7 +46,7 @@ def download_audio(url):
     request.urlretrieve(url, filename=os.path.curdir + "/audio/" + name + ".mp3")
 
 
-def download_script(url, language):
+def get_script(url, language):
     """スクリプトのダウンドーロ
 
     @params url ダウンドーロ先のリンク
@@ -61,8 +62,10 @@ def download_script(url, language):
         script += (content.string + "\n")
     return script
 
+
 def get_dl_link(url):
-    browser = webdriver.PhamtomJS("./phantomjs") #proxy超えられない
+    # proxy超えられない
+    browser = webdriver.PhamtomJS("./phantomjs")
     browser.get(url)
 
 
@@ -81,6 +84,24 @@ def send_mail(to_address, url, script):
     s.close()
 
 
+def send_line(url, script):
+    """データをLINEで送る
+    @params url TEDTalkのリンク
+    @params script 本文
+    """
+
+    api_url = "https://notify-api.line.me/api/notify"
+    title = url[26:].replace("_", " ")
+    message = "\n <THEME>\n" + title + \
+        " \n\n <URL>\n " + url + \
+        "\n\n <SCRIPT>\n" + script
+    params = {"message": message}
+    token = open("linetoken.txt").read().replace('\n', '')
+    header = {"Authorization": "Bearer " + token}
+    r = requests.post(api_url, params=params, headers=header)
+    print(r.text)
+
+
 if __name__ == "__main__":
 
     main_url = "https://www.ted.com"
@@ -92,8 +113,8 @@ if __name__ == "__main__":
 
     url = main_url + random.choice(links)
     print("--------------\n", url)
-    script = download_script(url, "en")
-    print(script)
+    script = get_script(url, "en")
+    send_line(url, script)
    # send_mail("okuno.ryo.411@gmail.com", url, script) #動かない
   #  download_video(dl_url)
   #  download_audio(dl_url)
